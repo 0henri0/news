@@ -19,7 +19,7 @@ class CreateTicketsTable extends Migration
             $table->text('content');
             $table->string('slug')->nullable();
             $table->tinyInteger('status')->default(1);
-            $table->integer('id_user')->unsigned();
+            $table->integer('id_user')->unsigned()->default(1);
             $table->foreign('id_user')->references('id_user')->on('users')->onDelete('cascade');
             $table->timestamps();
         });

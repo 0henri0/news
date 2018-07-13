@@ -13,11 +13,10 @@ class TicketsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        //
+    public function index() {
+        $tickets = Ticket::all();
+        return view('tickets.index', compact('tickets'));
     }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -62,9 +61,9 @@ class TicketsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
-        //
+   public function edit($slug) {
+        $ticket = Ticket::whereSlug($slug)->firstOrFail();
+        return view('tickets.edit', compact('ticket'));
     }
 
     /**
@@ -74,19 +73,30 @@ class TicketsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-        //
-    }
+    public function update($slug, TicketFormRequest $request) {
+        $ticket = Ticket::whereSlug($slug)->firstOrFail();
+        $ticket->title = $request->get('title');
+        $ticket->content = $request->get('content');
+        if($request->get('status') != null) {
+            $ticket->status = 0;
+        } else {
+            $ticket->status = 1;
+        }
+        $ticket->save();
+        return redirect(action('TicketsController@index'))->with('status', 'The ticket '.$slug.' has been updated!');
 
+    }
     /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($slug)
     {
-        //
+        $ticket = Ticket::whereSlug($slug)->firstOrFail();
+        $ticket->delete();
+        return redirect(action('TicketsController@index', $ticket->slug))->with('status', 'The ticket '.$slug.' has been deleted!');
     }
+
 }

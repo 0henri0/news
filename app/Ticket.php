@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Ticket extends Model
 {
+	protected $table = "tickets";
+    protected $primaryKey = "id_ticket";
 	protected $fillable = ['title', 'content', 'slug', 'status', 'user_id'];
     public function getTitle() {
         return $this->title;
